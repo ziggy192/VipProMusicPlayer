@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity  {
         init();
         setSupportActionBar(toolbar);
         ServiceContext.getInstance().getTypes();
-        ServiceContext.getInstance().startGetGenreDetail("0");
+//        ServiceContext.getInstance().startGetGenreDetail("0");
 
     }
 
@@ -99,8 +99,11 @@ public class MainActivity extends AppCompatActivity  {
 
     @Subscribe
     public void onMusicGenreClicked(MusicGenreRecyclerViewAdapter.OnMusicGenreItemClickedEvent event) {
-        Toast.makeText(this, event.getMusicGenre().toString(), Toast.LENGTH_SHORT).show();
-        toGenreDetailActivity(event.getMusicGenre());
+        MusicGenre musicGenre = event.getMusicGenre();
+//        Toast.makeText(this,musicGenre.toString(), Toast.LENGTH_SHORT).show();
+        ServiceContext.getInstance().startGetGenreDetail(musicGenre.getId());
+        toGenreDetailActivity(musicGenre);
+        EventBus.getDefault().removeStickyEvent(event);
     }
 
     private void toGenreDetailActivity(MusicGenre musicGenre) {

@@ -26,6 +26,9 @@ public class SongsDetail {
         return songName.getName();
     }
 
+    public SongImage[] getSongImages() {
+        return songImages;
+    }
 
 
     public String getSongArtist() {
@@ -73,6 +76,12 @@ public class SongsDetail {
         public String getName() {
             return name;
         }
+
+        @Override
+        public String toString() {
+            return
+                    "name='" + name ;
+        }
     }
     public class SongArtist{
         @SerializedName("label")
@@ -84,6 +93,11 @@ public class SongsDetail {
 
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String toString() {
+            return "name = " + name;
         }
     }
 }

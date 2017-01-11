@@ -5,22 +5,34 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.nghia.vippromusicplayer.R;
+import com.example.nghia.vippromusicplayer.adapters.SongsRecyclerViewAdapter;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GenreDetailActivity extends AppCompatActivity {
 
+    private static final String TAG = GenreDetailActivity.class.toString();
     @BindView(R.id.detail_image_view)
     ImageView imageView;
     MusicGenre musicGenre;
+    @BindView(R.id.rv_detail_songlist)
+    RecyclerView recyclerView;
+    SongsRecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +44,7 @@ public class GenreDetailActivity extends AppCompatActivity {
 
         setupUI();
 
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -42,13 +55,35 @@ public class GenreDetailActivity extends AppCompatActivity {
 //        });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(sticky = true)
+    public void updateUI(ServiceContext.OnSongsLoadedEvent event){
+        adapter.addSongsDetails(event.getSongsDetails());
+        EventBus.getDefault().removeStickyEvent(event);
+    }
+
     private void loadReferences() {
         Intent intent = getIntent();
         musicGenre = (MusicGenre) intent.getSerializableExtra(MainActivity.MUSIC_GENRE_KEY);
     }
 
     private void setupUI() {
-        int imageResouce  = getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", getPackageName());
-        Picasso.with(this).load(imageResouce).into(imageView);
+        int imageResource  = getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", getPackageName());
+        Picasso.with(this).load(imageResource).into(imageView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        adapter = new SongsRecyclerViewAdapter();
+        recyclerView.setAdapter(adapter);
+        Log.d(TAG, "done setting up UI");
     }
 }

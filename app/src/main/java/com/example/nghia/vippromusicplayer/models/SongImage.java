@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class SongImage {
 
-    @SerializedName("url")
+    @SerializedName("label")
     private String url;
     @SerializedName("attributes")
     private SongImageAttribute attribute;
@@ -33,11 +33,16 @@ public class SongImage {
         return attribute.getHeight().equals(SongImageAttribute.DEFAULT_LARGE_SIZE);
     }
 
-
+    @Override
+    public String toString() {
+        return
+                "url='" + url ;
+    }
 
     public class SongImageAttribute {
         private static final String DEFAULT_SMALL_SIZE = "60";
         private static final String DEFAULT_LARGE_SIZE = "170";
+        @SerializedName("height")
         private String height;
 
         public SongImageAttribute(String height) {

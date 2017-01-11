@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.nghia.vippromusicplayer.models.MediaTypeHolder;
 import com.example.nghia.vippromusicplayer.models.MusicDetailHolder;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.models.SongsDetail;
 import com.example.nghia.vippromusicplayer.services.MyRetrofitService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -87,7 +88,9 @@ public class ServiceContext {
         call.enqueue(new Callback<MusicDetailHolder>() {
             @Override
             public void onResponse(Call<MusicDetailHolder> call, Response<MusicDetailHolder> response) {
-                Log.d(TAG, String.format("on Detail response: %s", response.body()));
+                MusicDetailHolder musicDetailHolder = response.body();
+                Log.d(TAG, String.format("on Detail response: %s", musicDetailHolder));
+                EventBus.getDefault().postSticky(new OnSongsLoadedEvent(musicDetailHolder.getSongsDetails()));
             }
 
             @Override
@@ -179,6 +182,18 @@ public class ServiceContext {
 
         public ArrayList<MusicGenre> getMusicGenres() {
             return musicGenres;
+        }
+    }
+
+    public class OnSongsLoadedEvent{
+        ArrayList<SongsDetail> songsDetails;
+
+        public OnSongsLoadedEvent(ArrayList<SongsDetail> songsDetails) {
+            this.songsDetails = songsDetails;
+        }
+
+        public ArrayList<SongsDetail> getSongsDetails() {
+            return songsDetails;
         }
     }
 

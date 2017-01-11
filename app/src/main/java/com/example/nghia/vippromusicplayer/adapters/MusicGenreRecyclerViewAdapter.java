@@ -1,24 +1,31 @@
 package com.example.nghia.vippromusicplayer.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nghia.vippromusicplayer.R;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
-import com.example.nghia.vippromusicplayer.viewholders.MusicGenreViewHolder;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Nghia on 1/9/2017.
  */
 
-public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGenreViewHolder> {
+public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGenreRecyclerViewAdapter.MusicGenreViewHolder> {
 
     private ArrayList<MusicGenre> musicGenreArrayList;
     private RecyclerView mRecyclerView;
@@ -64,6 +71,28 @@ public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGen
 
         public MusicGenre getMusicGenre() {
             return musicGenre;
+        }
+    }
+
+    class MusicGenreViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.imv_item_music_genre)
+        ImageView imageView;
+        @BindView(R.id.tv_item_music_genre)
+        TextView textView;
+
+        Context context;
+
+        public MusicGenreViewHolder(View itemView) {
+            super(itemView);
+            context = itemView.getContext();
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(MusicGenre musicGenre) {
+            textView.setText(musicGenre.getTranslationKey());
+            int imageResouce  = context.getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", context.getPackageName());
+            Log.d("ahihi", musicGenre.getDrawableName());
+            Picasso.with(context).load(imageResouce).into(imageView);
         }
     }
 }

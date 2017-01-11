@@ -8,10 +8,36 @@
     tools:context="com.example.nghia.vippromusicplayer.activities.GenreDetailActivity"
     tools:showIn="@layout/activity_genre_detail">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_playlist_title"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:text="All"
+            android:textSize="16sp"
+            android:textColor="@color/colorAllWhite"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_playlist_caption"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:text="50 songs"
+            android:layout_below="@id/tv_playlist_title"
+            android:textColor="@color/colorAllWhite"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_detail_songlist"
+            android:layout_below="@id/tv_playlist_caption"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>
