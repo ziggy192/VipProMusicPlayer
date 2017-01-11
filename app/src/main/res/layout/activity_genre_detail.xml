@@ -20,8 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
+            app:titleEnabled="false"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|snap|enterAlwaysCollapsed|exitUntilCollapsed">
 
             <ImageView
                 android:id="@+id/detail.image_view"
@@ -34,8 +35,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:title=""
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:background="@drawable/gradient_box_reversed"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

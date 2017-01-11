@@ -3,8 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.nghia.vippromusicplayer.activities.GenreDetailActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_black_24px"
+        android:title="Search"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_change_favorite"
+        android:icon="@drawable/ic_favorite_border_white_24px"
+        android:title="Favorite"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share_white_24px"
+        android:title="Share"
+        app:showAsAction="always" />
+
+
+
+
+
+
 </menu>

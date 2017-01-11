@@ -2,6 +2,7 @@ package com.example.nghia.vippromusicplayer.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +10,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.nghia.vippromusicplayer.R;
 import com.example.nghia.vippromusicplayer.adapters.SongsRecyclerViewAdapter;
@@ -32,6 +36,13 @@ public class GenreDetailActivity extends AppCompatActivity {
     MusicGenre musicGenre;
     @BindView(R.id.rv_detail_songlist)
     RecyclerView recyclerView;
+    @BindView(R.id.tv_playlist_title)
+    TextView tvPlaylistTitle;
+    @BindView(R.id.toolbar_layout)
+    CollapsingToolbarLayout toolbarLayout;
+    @BindView(R.id.tv_playlist_caption)
+    TextView tvPlaylistCaption;
+
     SongsRecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +51,13 @@ public class GenreDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         loadReferences();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
 
         setupUI();
 
@@ -67,6 +84,26 @@ public class GenreDetailActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_genre_detail,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case (android.R.id.home):
+                onBackPressed();
+                return true;
+            case (R.id.action_change_favorite):
+                item.setIcon(R.drawable.ic_favorite_white_24px);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Subscribe(sticky = true)
     public void updateUI(ServiceContext.OnSongsLoadedEvent event){
         adapter.addSongsDetails(event.getSongsDetails());
@@ -79,7 +116,11 @@ public class GenreDetailActivity extends AppCompatActivity {
     }
 
     private void setupUI() {
+        toolbarLayout.setTitle("");
+
+        tvPlaylistTitle.setText(musicGenre.getTranslationKey());
         int imageResource  = getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", getPackageName());
+
         Picasso.with(this).load(imageResource).into(imageView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         adapter = new SongsRecyclerViewAdapter();

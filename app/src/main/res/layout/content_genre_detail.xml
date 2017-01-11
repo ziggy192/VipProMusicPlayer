@@ -9,11 +9,11 @@
     tools:showIn="@layout/activity_genre_detail">
 
     <RelativeLayout
+        android:padding="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
             android:id="@+id/tv_playlist_title"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="All"
             android:textSize="16sp"
             android:textColor="@color/colorAllWhite"
@@ -23,7 +23,6 @@
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/tv_playlist_caption"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="50 songs"
             android:layout_below="@id/tv_playlist_title"
             android:textColor="@color/colorAllWhite"
