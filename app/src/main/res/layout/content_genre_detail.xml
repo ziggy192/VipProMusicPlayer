@@ -33,6 +33,7 @@
             android:id="@+id/rv_detail_songlist"
             android:layout_below="@id/tv_playlist_caption"
             android:layout_marginTop="20dp"
+            tools:listitem="@layout/item_layout_song"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>

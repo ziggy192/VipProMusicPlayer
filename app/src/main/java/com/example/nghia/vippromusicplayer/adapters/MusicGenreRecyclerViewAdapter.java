@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nghia.vippromusicplayer.R;
+import com.example.nghia.vippromusicplayer.events.OnMusicGenreItemClickedEvent;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
 import com.squareup.picasso.Picasso;
 
@@ -30,7 +31,8 @@ public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGen
 
     private List<MusicGenre> musicGenreArrayList;
     private RecyclerView mRecyclerView;
-    public MusicGenreRecyclerViewAdapter(List<MusicGenre> musicGenreArrayList,RecyclerView recyclerView) {
+
+    public MusicGenreRecyclerViewAdapter(List<MusicGenre> musicGenreArrayList, RecyclerView recyclerView) {
         this.musicGenreArrayList = musicGenreArrayList;
         mRecyclerView = recyclerView;
     }
@@ -63,17 +65,6 @@ public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGen
         return musicGenreArrayList.size();
     }
 
-    public class OnMusicGenreItemClickedEvent{
-        MusicGenre musicGenre;
-
-        public OnMusicGenreItemClickedEvent(MusicGenre musicGenre) {
-            this.musicGenre = musicGenre;
-        }
-
-        public MusicGenre getMusicGenre() {
-            return musicGenre;
-        }
-    }
 
     class MusicGenreViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.imv_item_music_genre)
@@ -91,8 +82,7 @@ public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGen
 
         public void bind(MusicGenre musicGenre) {
             textView.setText(musicGenre.getTranslationKey());
-            int imageResouce  = context.getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", context.getPackageName());
-            Log.d("ahihi", musicGenre.getDrawableName());
+            int imageResouce = context.getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", context.getPackageName());
             Picasso.with(context).load(imageResouce).into(imageView);
         }
     }

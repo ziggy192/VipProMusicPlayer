@@ -4,8 +4,6 @@
     android:layout_height="200dp"
     android:padding="2dp">
 
-
-
     <ImageView
         android:id="@+id/imv_item_music_genre"
         android:layout_width="match_parent"

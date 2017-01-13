@@ -70,7 +70,8 @@ public class ServiceContext {
                     if (holder.getId().equals("34")){
                         Log.d(TAG, String.format("onResponse: genres = %s", holder.getGenres()));
 //                        listener.onResponse(holder.getGenres());
-                        EventBus.getDefault().postSticky(new OnMusicGenresLoadedEvent(holder.getGenres()));
+                        DBContext.getInstance().putMusicGenreList(holder.getGenres());
+                        EventBus.getDefault().post(new OnMusicGenresLoadedEvent());
                         break;
                     }
                 }
@@ -80,6 +81,7 @@ public class ServiceContext {
             @Override
             public void onFailure(Call<MediaTypeHolder[]> call, Throwable t) {
                 Log.d(TAG, "onFailure");
+                EventBus.getDefault().post(new OnMusicGenresLoadedEvent());
             }
         });
     }
@@ -97,8 +99,9 @@ public class ServiceContext {
                     songsDetail.setMusicGenreId(id);
                 }
 
-                DBContext.getInstance().deleteAllFromResult(DBContext.getInstance().getSongDetailList(id));
+                DBContext.getInstance().deleteAllFromResult(DBContext.getInstance().getSongsDetailResult(id));
                 DBContext.getInstance().putSongDetailList(songsDetails);
+
                 EventBus.getDefault().postSticky(new OnSongsLoadedEvent(id));
             }
 
@@ -115,15 +118,8 @@ public class ServiceContext {
 
     }
     public class OnMusicGenresLoadedEvent{
-        RealmList<MusicGenre> musicGenres;
 
-        public OnMusicGenresLoadedEvent(ArrayList<MusicGenre> musicGenres) {
-            this.musicGenres = new RealmList<>();
-            this.musicGenres.addAll(musicGenres);
-        }
-
-        public RealmList<MusicGenre> getMusicGenres() {
-            return musicGenres;
+        public OnMusicGenresLoadedEvent() {
         }
     }
 

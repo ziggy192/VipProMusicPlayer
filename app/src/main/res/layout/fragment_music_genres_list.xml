@@ -2,10 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.nghia.vippromusicplayer.fragments.MusicGenresListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView
+        tools:listitem="@layout/item_layout_music_genre"
         android:id="@+id/rv_music_genres"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

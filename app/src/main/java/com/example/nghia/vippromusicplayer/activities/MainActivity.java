@@ -2,7 +2,6 @@ package com.example.nghia.vippromusicplayer.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -12,16 +11,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.nghia.vippromusicplayer.R;
 import com.example.nghia.vippromusicplayer.adapters.MusicFragmentPagerAdapter;
 import com.example.nghia.vippromusicplayer.adapters.MusicGenreRecyclerViewAdapter;
+import com.example.nghia.vippromusicplayer.events.OnMusicGenreItemClickedEvent;
 import com.example.nghia.vippromusicplayer.fragments.MusicGenresListFragment;
 import com.example.nghia.vippromusicplayer.fragments.OfflineFragment;
-import com.example.nghia.vippromusicplayer.fragments.PlaylistFragment;
+import com.example.nghia.vippromusicplayer.fragments.FavoriteListFragment;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
-import com.example.nghia.vippromusicplayer.utils.DBContext;
 import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmList;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -93,11 +90,9 @@ public class MainActivity extends AppCompatActivity  {
     public void setupUI(ServiceContext.OnMusicGenresLoadedEvent event){
         Log.d(TAG, "on Setting up main UI");
 
-        DBContext.getInstance().putMusicGenreList(event.getMusicGenres());
-
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new MusicGenresListFragment());
-        fragments.add(new PlaylistFragment());
+        fragments.add(new FavoriteListFragment());
         fragments.add(new OfflineFragment());
         MusicFragmentPagerAdapter pagerAdapter = new MusicFragmentPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
@@ -105,12 +100,11 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     @Subscribe
-    public void onMusicGenreClicked(MusicGenreRecyclerViewAdapter.OnMusicGenreItemClickedEvent event) {
+    public void onMusicGenreClicked(OnMusicGenreItemClickedEvent event) {
         MusicGenre musicGenre = event.getMusicGenre();
 //        Toast.makeText(this,musicGenre.toString(), Toast.LENGTH_SHORT).show();
         ServiceContext.getInstance().startGetGenreDetail(musicGenre.getId());
         toGenreDetailActivity(musicGenre);
-        EventBus.getDefault().removeStickyEvent(event);
     }
 
     private void toGenreDetailActivity(MusicGenre musicGenre) {

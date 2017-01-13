@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
 import com.example.nghia.vippromusicplayer.models.SongsDetail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,18 +43,37 @@ public class DBContext {
         realm.commitTransaction();
     }
 
+    public void putMusicGenreList(List<MusicGenre> musicGenres) {
+        RealmList<MusicGenre> musicGenreRealmList = new RealmList<>();
+        musicGenreRealmList.addAll(musicGenres);
+        this.putMusicGenreList(musicGenreRealmList);
+    }
+
     public void updateMusicGenre(MusicGenre musicGenre) {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(musicGenre);
         realm.commitTransaction();
     }
 
+
     public Realm getRealm() {
         return realm;
     }
 
-    public List<MusicGenre> getMusicGenreList() {
-        return realm.where(MusicGenre.class).findAll();
+    public ArrayList<MusicGenre> getMusicGenreList() {
+
+        RealmResults<MusicGenre> realmResults = realm.where(MusicGenre.class).findAll();
+        ArrayList<MusicGenre> musicGenres = new ArrayList<>();
+        musicGenres.addAll(realmResults);
+        return musicGenres;
+    }
+
+    public ArrayList<MusicGenre> getFavoriteList() {
+        RealmResults<MusicGenre> realmResults = realm.where(MusicGenre.class)
+                .equalTo("isFavorite", true).findAll();
+        ArrayList<MusicGenre> musicGenres = new ArrayList<>();
+        musicGenres.addAll(realmResults);
+        return musicGenres;
 
     }
 
@@ -73,7 +93,14 @@ public class DBContext {
         return realm.where(MusicGenre.class).equalTo("id", genreId).findFirst();
     }
 
-    public RealmResults<SongsDetail> getSongDetailList(String genreId) {
+    public ArrayList<SongsDetail> getSongDetailList(String genreId) {
+        RealmResults<SongsDetail> songsDetails = realm.where(SongsDetail.class).equalTo("musicGenreId", genreId).findAll();
+        ArrayList<SongsDetail> detailArrayList = new ArrayList<>();
+        detailArrayList.addAll(songsDetails);
+        return detailArrayList;
+    }
+
+    public RealmResults<SongsDetail> getSongsDetailResult(String genreId) {
         return realm.where(SongsDetail.class).equalTo("musicGenreId", genreId).findAll();
     }
 
