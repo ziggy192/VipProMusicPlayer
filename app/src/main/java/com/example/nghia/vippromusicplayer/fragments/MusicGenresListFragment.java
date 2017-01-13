@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.nghia.vippromusicplayer.R;
 import com.example.nghia.vippromusicplayer.adapters.MusicGenreRecyclerViewAdapter;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.utils.DBContext;
 import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 
 import org.greenrobot.eventbus.EventBus;
@@ -21,9 +22,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 
 
 /**
@@ -46,13 +49,13 @@ public class MusicGenresListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
 
@@ -62,13 +65,14 @@ public class MusicGenresListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_music_genres_list, container, false);
         ButterKnife.bind(this, rootView);
-//        setupUI();
+        setupUI();
         return rootView;
     }
 
-    @Subscribe(sticky = true)
-    public void setupUI(ServiceContext.OnMusicGenresLoadedEvent event) {
+    private void setupUI() {
         Log.d(TAG, "on setting up fragments");
+        List<MusicGenre> musicGenres = DBContext.getInstance().getMusicGenreList();
+
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -77,9 +81,28 @@ public class MusicGenresListFragment extends Fragment {
             }
         });
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new MusicGenreRecyclerViewAdapter(event.getMusicGenres(),recyclerView));
-
+        recyclerView.setAdapter(new MusicGenreRecyclerViewAdapter(musicGenres,recyclerView));
     }
+
+//    @Subscribe(sticky = true)
+//    public void setupUI(ServiceContext.OnMusicGenresLoadedEvent event) {
+//        Log.d(TAG, "on setting up fragments");
+//        List<MusicGenre> musicGenres = event.getMusicGenres();
+//
+//        DBContext.getInstance().putMusicGenreList((RealmList<MusicGenre>) musicGenres);
+//        musicGenres = DBContext.getInstance().getMusicGenreList();
+//
+//        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+//        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+//                return (position % 3 == 0 ? 2 : 1);
+//            }
+//        });
+//        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setAdapter(new MusicGenreRecyclerViewAdapter(musicGenres,recyclerView));
+//
+//    }
 
     @Override
     public String toString() {

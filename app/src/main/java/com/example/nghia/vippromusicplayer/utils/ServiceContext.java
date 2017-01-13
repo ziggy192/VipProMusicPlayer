@@ -12,7 +12,9 @@ import com.example.nghia.vippromusicplayer.services.MyRetrofitService;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,7 +84,7 @@ public class ServiceContext {
         });
     }
 
-    public void startGetGenreDetail(String id){
+    public void startGetGenreDetail(final String id){
         MyRetrofitService service = getDetailRetrofit().create(MyRetrofitService.class);
         Call<MusicDetailHolder> call = service.getMusicDetail(id);
         call.enqueue(new Callback<MusicDetailHolder>() {
@@ -90,110 +92,50 @@ public class ServiceContext {
             public void onResponse(Call<MusicDetailHolder> call, Response<MusicDetailHolder> response) {
                 MusicDetailHolder musicDetailHolder = response.body();
                 Log.d(TAG, String.format("on Detail response: %s", musicDetailHolder));
-                EventBus.getDefault().postSticky(new OnSongsLoadedEvent(musicDetailHolder.getSongsDetails()));
+                List<SongsDetail> songsDetails = musicDetailHolder.getSongsDetails();
+                for (SongsDetail songsDetail : songsDetails) {
+                    songsDetail.setMusicGenreId(id);
+                }
+
+                DBContext.getInstance().deleteAllFromResult(DBContext.getInstance().getSongDetailList(id));
+                DBContext.getInstance().putSongDetailList(songsDetails);
+                EventBus.getDefault().postSticky(new OnSongsLoadedEvent(id));
             }
 
             @Override
             public void onFailure(Call<MusicDetailHolder> call, Throwable t) {
-
+                EventBus.getDefault().postSticky(new OnSongsLoadedEvent(id));
             }
         });
     }
 
-//    public void getTodos(String token) {
-//
-//        MyRetrofitService service = getGenresRetrofit().create(MyRetrofitService.class);
-//        HashMap<String, String> headers = new HashMap<>();
-//        headers.put(HEADER_TOKEN_KEY, token);
-//        Call<ArrayList<TodoModel>> call=  service.getUser(headers);
-//        call.enqueue(new Callback<ArrayList<TodoModel>>() {
-//            @Override
-//            public void onResponse(Call<ArrayList<TodoModel>> call, Response<ArrayList<TodoModel>> response) {
-//                ArrayList<TodoModel> todoModels = response.body();
-////                Log.d(TAG, String.format("onResponse: todoModels = %s", todoModels));
-//                OnGetTodoListEvent event = new OnGetTodoListEvent(todoModels);
-//                EventBus.getDefault().post(event);
-////                updateUI(todoModels);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ArrayList<TodoModel>> call, Throwable t) {
-//
-//            }
-//        });
-//    }
-//
-//    public void editTodo(String token, final TodoModel editedTodoModel, final ServiceTodoReceivedListener listener) {
-//        MyRetrofitService service = getGenresRetrofit().create(MyRetrofitService.class);
-//        HashMap<String, String> headers = new HashMap<>();
-//        headers.put(HEADER_TOKEN_KEY, token);
-////        headers.put("Content-Type", "application/x-www-form-urlencoded");
-//        Call<TodoModel> call = service.editTodo(editedTodoModel
-//                , editedTodoModel.getTodoId().getId(), headers);
-//        call.enqueue(new Callback<TodoModel>() {
-//            @Override
-//            public void onResponse(Call<TodoModel> call, Response<TodoModel> response) {
-//                Log.d(TAG, "onResponse: Edited success");
-////                EventBus.getDefault().post(new OnReceiveNewTodoEvent(response.body()));
-////                EventBus.getDefault().post(new OnAdapterDataSetChangeEvent());
-//                listener.onResponse(response.body());
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<TodoModel> call, Throwable t) {
-//
-//            }
-//        });
-//    }
-//    public void createTodo(String token, TodoModel todoModel, final ServiceTodoReceivedListener listener) {
-//
-//        MyRetrofitService service = getGenresRetrofit().create(MyRetrofitService.class);
-//        HashMap<String, String> headers = new HashMap<>();
-//        headers.put(HEADER_TOKEN_KEY, token);
-//
-////        headers.put("Content-Type", "application/x-www-form-urlencoded");
-//        Call<TodoModel[]> call=  service.createTodo(todoModel,headers);
-//        call.enqueue(new Callback<TodoModel[]>() {
-//            @Override
-//            public void onResponse(Call<TodoModel[]> call, Response<TodoModel[]> response) {
-//                Log.d(TAG, "onResponse: success");
-////                EventBus.getDefault().post(new OnReceiveNewTodoEvent(response.body()[0]));
-//                listener.onResponse(response.body()[0]);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<TodoModel[]> call, Throwable t) {
-//
-//            }
-//        });
-//    }
 
 
     public class OnAdapterDataSetChangeEvent{
 
     }
     public class OnMusicGenresLoadedEvent{
-        ArrayList<MusicGenre> musicGenres;
+        RealmList<MusicGenre> musicGenres;
 
         public OnMusicGenresLoadedEvent(ArrayList<MusicGenre> musicGenres) {
-            this.musicGenres = musicGenres;
+            this.musicGenres = new RealmList<>();
+            this.musicGenres.addAll(musicGenres);
         }
 
-        public ArrayList<MusicGenre> getMusicGenres() {
+        public RealmList<MusicGenre> getMusicGenres() {
             return musicGenres;
         }
     }
 
     public class OnSongsLoadedEvent{
-        ArrayList<SongsDetail> songsDetails;
+        String songsId;
 
-        public OnSongsLoadedEvent(ArrayList<SongsDetail> songsDetails) {
-            this.songsDetails = songsDetails;
+        public OnSongsLoadedEvent(String songsId) {
+            this.songsId = songsId;
         }
 
-        public ArrayList<SongsDetail> getSongsDetails() {
-            return songsDetails;
+        public String getSongsId() {
+            return songsId;
         }
     }
 

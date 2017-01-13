@@ -21,6 +21,7 @@ import com.example.nghia.vippromusicplayer.fragments.MusicGenresListFragment;
 import com.example.nghia.vippromusicplayer.fragments.OfflineFragment;
 import com.example.nghia.vippromusicplayer.fragments.PlaylistFragment;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.utils.DBContext;
 import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -90,7 +92,9 @@ public class MainActivity extends AppCompatActivity  {
     @Subscribe
     public void setupUI(ServiceContext.OnMusicGenresLoadedEvent event){
         Log.d(TAG, "on Setting up main UI");
-        ArrayList<MusicGenre> musicGenres = event.getMusicGenres();
+
+        DBContext.getInstance().putMusicGenreList(event.getMusicGenres());
+
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new MusicGenresListFragment());
         fragments.add(new PlaylistFragment());
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity  {
 
     private void toGenreDetailActivity(MusicGenre musicGenre) {
         Intent intent = new Intent(MainActivity.this,GenreDetailActivity.class);
-        intent.putExtra(MUSIC_GENRE_KEY, musicGenre);
+        intent.putExtra(MUSIC_GENRE_KEY, musicGenre.getId());
         startActivity(intent);
     }
 

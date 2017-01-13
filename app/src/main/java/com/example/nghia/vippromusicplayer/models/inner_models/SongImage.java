@@ -1,17 +1,21 @@
-package com.example.nghia.vippromusicplayer.models;
+package com.example.nghia.vippromusicplayer.models.inner_models;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Nghia on 1/10/2017.
- */
+import io.realm.RealmObject;
 
-public class SongImage {
+/**
+ * Created by Nghia on 1/12/2017.
+ */
+public class SongImage  extends RealmObject {
 
     @SerializedName("label")
     private String url;
     @SerializedName("attributes")
     private SongImageAttribute attribute;
+
+    public SongImage() {
+    }
 
     public SongImage(String url, SongImageAttribute attribute) {
         this.url = url;
@@ -39,18 +43,5 @@ public class SongImage {
                 "url='" + url ;
     }
 
-    public class SongImageAttribute {
-        private static final String DEFAULT_SMALL_SIZE = "60";
-        private static final String DEFAULT_LARGE_SIZE = "170";
-        @SerializedName("height")
-        private String height;
 
-        public SongImageAttribute(String height) {
-            this.height = height;
-        }
-
-        public String getHeight() {
-            return height;
-        }
-    }
 }

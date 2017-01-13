@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by Nghia on 1/8/2017.
  */
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 public class MediaTypeHolder {
     @SerializedName("subgenres")
     private ArrayList<MusicGenre> genres;
+
+    @PrimaryKey
     @SerializedName("id")
     private String id;
 

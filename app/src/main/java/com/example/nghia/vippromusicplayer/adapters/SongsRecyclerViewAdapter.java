@@ -14,6 +14,7 @@ import com.example.nghia.vippromusicplayer.models.SongsDetail;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 import butterknife.BindView;
@@ -25,9 +26,9 @@ import butterknife.ButterKnife;
 
 public class SongsRecyclerViewAdapter extends RecyclerView.Adapter<SongsRecyclerViewAdapter.SongViewHolder> {
 
-    ArrayList<SongsDetail> songsDetails;
+    List<SongsDetail> songsDetails;
 
-    public SongsRecyclerViewAdapter(ArrayList<SongsDetail> songsDetails) {
+    public SongsRecyclerViewAdapter(List<SongsDetail> songsDetails) {
         this.songsDetails = songsDetails;
     }
 
@@ -42,7 +43,7 @@ public class SongsRecyclerViewAdapter extends RecyclerView.Adapter<SongsRecycler
         return holder;
     }
 
-    public void addSongsDetails(ArrayList<SongsDetail> songsDetails) {
+    public void addSongsDetails(List<SongsDetail> songsDetails) {
         int beginningSize = this.songsDetails.size();
         this.songsDetails.addAll(songsDetails);
 //        this.notifyDataSetChanged();

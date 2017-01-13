@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.nghia.vippromusicplayer.R;
 import com.example.nghia.vippromusicplayer.adapters.SongsRecyclerViewAdapter;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.utils.DBContext;
 import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +28,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class GenreDetailActivity extends AppCompatActivity {
 
@@ -43,6 +45,8 @@ public class GenreDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_playlist_caption)
     TextView tvPlaylistCaption;
 
+    Menu menu;
+
     SongsRecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +60,8 @@ public class GenreDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
-
         setupUI();
+
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -87,7 +89,21 @@ public class GenreDetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_genre_detail,menu);
+        this.menu = menu;
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_change_favorite);
+        if (item != null) {
+            if (musicGenre.isFavorite()) {
+                item.setIcon(R.drawable.ic_favorite_white_24px);
+            } else {
+                item.setIcon(R.drawable.ic_favorite_border_white_24px);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -97,8 +113,16 @@ public class GenreDetailActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case (R.id.action_change_favorite):
-                item.setIcon(R.drawable.ic_favorite_white_24px);
-                break;
+
+                DBContext.getInstance().getRealm().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        musicGenre.changeFavorite();
+                    }
+                });
+//                DBContext.getInstance().updateMusicGenre(musicGenre);
+                invalidateOptionsMenu();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -106,18 +130,20 @@ public class GenreDetailActivity extends AppCompatActivity {
 
     @Subscribe(sticky = true)
     public void updateUI(ServiceContext.OnSongsLoadedEvent event){
-        adapter.addSongsDetails(event.getSongsDetails());
+        adapter.addSongsDetails(DBContext.getInstance().getSongDetailList(event.getSongsId()));
         EventBus.getDefault().removeStickyEvent(event);
     }
 
     private void loadReferences() {
         Intent intent = getIntent();
-        musicGenre = (MusicGenre) intent.getSerializableExtra(MainActivity.MUSIC_GENRE_KEY);
+        String genreId = intent.getStringExtra(MainActivity.MUSIC_GENRE_KEY);
+        musicGenre = DBContext.getInstance().getMusicGenre(genreId);
     }
+
 
     private void setupUI() {
         toolbarLayout.setTitle("");
-
+        //setup favorite:
         tvPlaylistTitle.setText(musicGenre.getTranslationKey());
         int imageResource  = getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", getPackageName());
 

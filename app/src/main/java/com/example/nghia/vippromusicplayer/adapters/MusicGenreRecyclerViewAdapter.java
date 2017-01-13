@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,9 +28,9 @@ import butterknife.ButterKnife;
 
 public class MusicGenreRecyclerViewAdapter extends RecyclerView.Adapter<MusicGenreRecyclerViewAdapter.MusicGenreViewHolder> {
 
-    private ArrayList<MusicGenre> musicGenreArrayList;
+    private List<MusicGenre> musicGenreArrayList;
     private RecyclerView mRecyclerView;
-    public MusicGenreRecyclerViewAdapter(ArrayList<MusicGenre> musicGenreArrayList,RecyclerView recyclerView) {
+    public MusicGenreRecyclerViewAdapter(List<MusicGenre> musicGenreArrayList,RecyclerView recyclerView) {
         this.musicGenreArrayList = musicGenreArrayList;
         mRecyclerView = recyclerView;
     }
