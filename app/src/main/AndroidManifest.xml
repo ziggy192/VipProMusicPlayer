@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.TestingNewBasicMainActivity"
+            android:label="@string/title_activity_testing_new_basic_main"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,9 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.GenreDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

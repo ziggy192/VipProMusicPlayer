@@ -1,22 +1,30 @@
-package com.example.nghia.vippromusicplayer.activities;
+package com.example.nghia.vippromusicplayer.activities.activities_as_fragments;
 
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nghia.vippromusicplayer.R;
+import com.example.nghia.vippromusicplayer.activities.GenreDetailActivity;
+import com.example.nghia.vippromusicplayer.activities.MainActivity;
 import com.example.nghia.vippromusicplayer.adapters.SongsRecyclerViewAdapter;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
 import com.example.nghia.vippromusicplayer.utils.DBContext;
@@ -30,7 +38,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-public class GenreDetailActivity extends AppCompatActivity {
+import static com.example.nghia.vippromusicplayer.activities.activities_as_fragments.NewMainActivityFragment.MUSIC_GENRE_KEY;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class NewGenreDetailFragment extends Fragment {
 
     private static final String TAG = GenreDetailActivity.class.toString();
     @BindView(R.id.detail_image_view)
@@ -45,54 +58,44 @@ public class GenreDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_playlist_caption)
     TextView tvPlaylistCaption;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    AppCompatActivity mainActivity;
+
+
 
     SongsRecyclerViewAdapter adapter;
+
+
+    public NewGenreDetailFragment() {
+        // Required empty public constructor
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainActivity = (AppCompatActivity) context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_genre_detail);
-        ButterKnife.bind(this);
         loadReferences();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        setupUI();
+        ServiceContext.getInstance().startGetGenreDetail(musicGenre.getId());
+        setHasOptionsMenu(true);
+    }
 
 
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mainActivity.getMenuInflater().inflate(R.menu.menu_genre_detail,menu);
+        onPrepareOptionsMenu(menu);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_genre_detail,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_change_favorite);
         if (item != null) {
             if (musicGenre.isFavorite()) {
@@ -101,14 +104,48 @@ public class GenreDetailActivity extends AppCompatActivity {
                 item.setIcon(R.drawable.ic_favorite_border_white_24px);
             }
         }
-        return super.onPrepareOptionsMenu(menu);
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_new_genre_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ButterKnife.bind(this,view);
+
+        //todo debugging
+        toolbar.setTitle("");
+        mainActivity.setSupportActionBar(toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupUI();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case (android.R.id.home):
-                onBackPressed();
+                mainActivity.onBackPressed();
                 return true;
             case (R.id.action_change_favorite):
 
@@ -118,8 +155,7 @@ public class GenreDetailActivity extends AppCompatActivity {
                         musicGenre.changeFavorite();
                     }
                 });
-//                DBContext.getInstance().updateMusicGenre(musicGenre);
-                invalidateOptionsMenu();
+                mainActivity.invalidateOptionsMenu();
                 return true;
         }
 
@@ -133,8 +169,8 @@ public class GenreDetailActivity extends AppCompatActivity {
     }
 
     private void loadReferences() {
-        Intent intent = getIntent();
-        String genreId = intent.getStringExtra(MainActivity.MUSIC_GENRE_KEY);
+
+        String genreId = getArguments().getString(MUSIC_GENRE_KEY);
         musicGenre = DBContext.getInstance().getMusicGenre(genreId);
     }
 
@@ -143,10 +179,13 @@ public class GenreDetailActivity extends AppCompatActivity {
         toolbarLayout.setTitle("");
         //setup favorite:
         tvPlaylistTitle.setText(musicGenre.getTranslationKey());
-        int imageResource  = getResources().getIdentifier(musicGenre.getDrawableName(), "drawable", getPackageName());
+        int imageResource  = getResources()
+                .getIdentifier(musicGenre.getDrawableName(),
+                        "drawable", mainActivity.getPackageName());
 
-        Picasso.with(this).load(imageResource).into(imageView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        Picasso.with(mainActivity).load(imageResource).into(imageView);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(mainActivity,LinearLayoutManager.VERTICAL,false));
         adapter = new SongsRecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
         Log.d(TAG, "done setting up UI");
