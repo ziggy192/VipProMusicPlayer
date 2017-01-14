@@ -73,5 +73,7 @@
 
     </RelativeLayout>
 
+    <include layout="@layout/bottomsheet_song_player" />
+
 
 </android.support.design.widget.CoordinatorLayout>

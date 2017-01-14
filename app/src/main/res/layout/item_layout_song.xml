@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="80dp">
     <RelativeLayout
 
         android:layout_width="0dp"
@@ -15,6 +16,7 @@
             android:elevation="12dp"
             android:id="@+id/view2"
             app:cardCornerRadius="35dp"
+            android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
             android:innerRadius="0dp"
             android:shape="oval"
@@ -32,10 +34,11 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="7"
+        android:layout_marginTop="10dp"
         android:layout_height="match_parent">
         <TextView
             android:id="@+id/tv_item_song_title"
-            android:text="Back Eyes Peas"
+            tools:text="Black Beattles (feat. Gucci Mane)"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/colorAllWhite"
@@ -44,6 +47,7 @@
         <TextView
             android:id="@+id/tv_item_song_author"
             android:layout_below="@id/tv_item_song_title"
+            tools:text="Rae Stemmund"
             android:textSize="12sp"
             android:textColor="@color/colorAllWhite"
             android:layout_width="wrap_content"
