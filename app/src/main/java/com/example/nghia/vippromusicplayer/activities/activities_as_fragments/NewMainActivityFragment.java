@@ -19,8 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.nghia.vippromusicplayer.R;
-import com.example.nghia.vippromusicplayer.activities.GenreDetailActivity;
-import com.example.nghia.vippromusicplayer.activities.MainActivity;
 import com.example.nghia.vippromusicplayer.activities.TestingNewBasicMainActivity;
 import com.example.nghia.vippromusicplayer.adapters.MusicFragmentPagerAdapter;
 import com.example.nghia.vippromusicplayer.events.OnMusicGenreItemClickedEvent;
@@ -42,7 +40,7 @@ import butterknife.ButterKnife;
  * A placeholder fragment containing a simple view.
  */
 public class NewMainActivityFragment extends Fragment {
-    private static final String TAG = MainActivity.class.toString();
+    private static final String TAG = NewMainActivityFragment.class.toString();
     public static final String MUSIC_GENRE_KEY = "music_genre";
     @BindView(R.id.main_tab_layout)
     TabLayout tabLayout;
@@ -151,6 +149,7 @@ public class NewMainActivityFragment extends Fragment {
                 new TestingNewBasicMainActivity.DemandFragmentChangingEvent
                         (newGenreDetailFragment,true));
     }
+
 
 
 }

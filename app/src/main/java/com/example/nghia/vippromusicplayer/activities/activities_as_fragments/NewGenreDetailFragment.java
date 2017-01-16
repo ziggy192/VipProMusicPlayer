@@ -2,7 +2,6 @@ package com.example.nghia.vippromusicplayer.activities.activities_as_fragments;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -23,10 +22,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nghia.vippromusicplayer.R;
-import com.example.nghia.vippromusicplayer.activities.GenreDetailActivity;
-import com.example.nghia.vippromusicplayer.activities.MainActivity;
+import com.example.nghia.vippromusicplayer.activities.TestingNewBasicMainActivity;
 import com.example.nghia.vippromusicplayer.adapters.SongsRecyclerViewAdapter;
+import com.example.nghia.vippromusicplayer.events.OnSongItemClickedEvent;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.models.SongsDetail;
 import com.example.nghia.vippromusicplayer.utils.DBContext;
 import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 import com.squareup.picasso.Picasso;
@@ -36,6 +36,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hybridmediaplayer.Hybrid;
 import io.realm.Realm;
 
 import static com.example.nghia.vippromusicplayer.activities.activities_as_fragments.NewMainActivityFragment.MUSIC_GENRE_KEY;
@@ -45,7 +46,7 @@ import static com.example.nghia.vippromusicplayer.activities.activities_as_fragm
  */
 public class NewGenreDetailFragment extends Fragment {
 
-    private static final String TAG = GenreDetailActivity.class.toString();
+    private static final String TAG = NewGenreDetailFragment.class.toString();
     @BindView(R.id.detail_image_view)
     ImageView imageView;
     MusicGenre musicGenre;
@@ -62,7 +63,6 @@ public class NewGenreDetailFragment extends Fragment {
     Toolbar toolbar;
 
     AppCompatActivity mainActivity;
-
 
 
     SongsRecyclerViewAdapter adapter;
@@ -90,7 +90,7 @@ public class NewGenreDetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        mainActivity.getMenuInflater().inflate(R.menu.menu_genre_detail,menu);
+        mainActivity.getMenuInflater().inflate(R.menu.menu_genre_detail, menu);
         onPrepareOptionsMenu(menu);
     }
 
@@ -115,7 +115,7 @@ public class NewGenreDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
 
         //todo debugging
         toolbar.setTitle("");
@@ -138,9 +138,6 @@ public class NewGenreDetailFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -161,10 +158,19 @@ public class NewGenreDetailFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+    @Subscribe
+    public void onSongItemClicked(OnSongItemClickedEvent event) {
+        SongsDetail songsDetail = event.getSongsDetail();
+        Log.d(TAG, String.format("onSongItemClicked: songDetail = %s", songsDetail.getSongName()));
+        EventBus.getDefault().post(new TestingNewBasicMainActivity.OnChangingSongEvent(songsDetail));
+        ServiceContext.getInstance().startGetPlayableSong(songsDetail.getNameAndArtist());
+    }
+
+
 
     @Subscribe(sticky = true)
-    public void updateUI(ServiceContext.OnSongsLoadedEvent event){
-        adapter.addSongsDetails(DBContext.getInstance().getSongDetailList(event.getSongsId()));
+    public void updateUI(ServiceContext.OnSongsLoadedEvent event) {
+        adapter.addSongsDetails(DBContext.getInstance().getSongDetailList(event.getMusicGenreId()));
         EventBus.getDefault().removeStickyEvent(event);
     }
 
@@ -179,14 +185,14 @@ public class NewGenreDetailFragment extends Fragment {
         toolbarLayout.setTitle("");
         //setup favorite:
         tvPlaylistTitle.setText(musicGenre.getTranslationKey());
-        int imageResource  = getResources()
+        int imageResource = getResources()
                 .getIdentifier(musicGenre.getDrawableName(),
                         "drawable", mainActivity.getPackageName());
 
         Picasso.with(mainActivity).load(imageResource).into(imageView);
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(mainActivity,LinearLayoutManager.VERTICAL,false));
-        adapter = new SongsRecyclerViewAdapter();
+                new LinearLayoutManager(mainActivity, LinearLayoutManager.VERTICAL, false));
+        adapter = new SongsRecyclerViewAdapter(recyclerView);
         recyclerView.setAdapter(adapter);
         Log.d(TAG, "done setting up UI");
     }

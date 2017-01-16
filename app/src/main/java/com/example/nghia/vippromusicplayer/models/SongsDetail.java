@@ -45,7 +45,6 @@ public class SongsDetail extends RealmObject {
         return songImages;
     }
 
-
     public String getSongArtist() {
         return songArtist.getName();
     }
@@ -60,6 +59,7 @@ public class SongsDetail extends RealmObject {
         return null;
     }
 
+
     public String getLargeImageUrl(){
         String url;
         for (SongImage image : songImages) {
@@ -68,6 +68,10 @@ public class SongsDetail extends RealmObject {
             }
         }
         return null;
+    }
+
+    public String getNameAndArtist() {
+        return getSongName() + " " + getSongArtist();
     }
 
     @Override

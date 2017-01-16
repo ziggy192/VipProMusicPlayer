@@ -10,8 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nghia.vippromusicplayer.R;
+import com.example.nghia.vippromusicplayer.events.OnMusicGenreItemClickedEvent;
+import com.example.nghia.vippromusicplayer.events.OnSongItemClickedEvent;
+import com.example.nghia.vippromusicplayer.models.MusicGenre;
 import com.example.nghia.vippromusicplayer.models.SongsDetail;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +31,30 @@ import butterknife.ButterKnife;
 
 public class SongsRecyclerViewAdapter extends RecyclerView.Adapter<SongsRecyclerViewAdapter.SongViewHolder> {
 
-    List<SongsDetail> songsDetails;
+    private List<SongsDetail> songsDetails;
+    private RecyclerView mRecyclerView;
 
-    public SongsRecyclerViewAdapter(List<SongsDetail> songsDetails) {
+    public SongsRecyclerViewAdapter(List<SongsDetail> songsDetails, RecyclerView recyclerView) {
         this.songsDetails = songsDetails;
+        mRecyclerView = recyclerView;
     }
 
-    public SongsRecyclerViewAdapter() {
+    public SongsRecyclerViewAdapter(RecyclerView recyclerView) {
         this.songsDetails = new ArrayList<>();
+        mRecyclerView = recyclerView;
     }
 
     @Override
     public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout_song, parent,false);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int itemPosition = mRecyclerView.getChildAdapterPosition(v);
+                SongsDetail songsDetail = songsDetails.get(itemPosition);
+                EventBus.getDefault().post(new OnSongItemClickedEvent(songsDetail));
+            }
+        });
         SongViewHolder holder = new SongViewHolder(itemView);
         return holder;
     }

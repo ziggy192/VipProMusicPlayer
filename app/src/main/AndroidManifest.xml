@@ -14,7 +14,7 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".activities.TestingNewBasicMainActivity"
-            android:label="@string/title_activity_testing_new_basic_main"
+            android:label="VipProMusicPlayer"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

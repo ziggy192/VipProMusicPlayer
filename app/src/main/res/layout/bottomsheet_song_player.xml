@@ -7,11 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/bottom_sheet_high"
 
+    android:clickable="true"
     android:background="@color/colorPrimaryLight"
-
-    app:behavior_hideable="false"
+    app:behavior_hideable="true"
     app:behavior_peekHeight="@dimen/bottom_sheet_high"
-
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
 
@@ -51,8 +50,8 @@
                     android:shape="oval"
                     android:thicknessRatio="1.9">
                     <ImageView
-                        android:layout_height="80dp"
-                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
                         android:id="@+id/imv_item_song_thumbail"
                         android:scaleType="fitXY"
                         android:layout_alignParentTop="true"
@@ -88,6 +87,7 @@
             android:layout_weight="2"
             android:layout_height="match_parent">
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_pause"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"

@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.nghia.vippromusicplayer.models.MediaTypeHolder;
 import com.example.nghia.vippromusicplayer.models.MusicDetailHolder;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
+import com.example.nghia.vippromusicplayer.models.PlayableSong;
+import com.example.nghia.vippromusicplayer.models.PlayableSongHolder;
 import com.example.nghia.vippromusicplayer.models.SongsDetail;
 import com.example.nghia.vippromusicplayer.services.MyRetrofitService;
 
@@ -14,7 +16,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +31,8 @@ public class ServiceContext {
     private static final String TAG = ServiceContext.class.toString();
     private Retrofit genresRetrofit;
     private Retrofit detailRetrofit;
-    private ServiceContext(String genreUrl,String detailUrl) {
+    private Retrofit mp3Retrofit;
+    private ServiceContext(String genreUrl,String detailUrl,String downloadUrl) {
         genresRetrofit = new Retrofit.Builder()
                 .baseUrl(genreUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -40,11 +42,16 @@ public class ServiceContext {
                 .baseUrl(detailUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        mp3Retrofit = new Retrofit.Builder()
+                .baseUrl(downloadUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
     }
 
     private static  ServiceContext instance ;
-    public static void init(String genreUrl,String detailUrl){
-        instance = new ServiceContext(genreUrl,detailUrl);
+    public static void init(String genreUrl,String detailUrl,String downloadUrl){
+        instance = new ServiceContext(genreUrl,detailUrl,downloadUrl);
     }
 
     private Retrofit getGenresRetrofit() {
@@ -53,6 +60,10 @@ public class ServiceContext {
 
     private Retrofit getDetailRetrofit() {
         return detailRetrofit;
+    }
+
+    public Retrofit getMp3Retrofit() {
+        return mp3Retrofit;
     }
 
     public static ServiceContext getInstance() {
@@ -112,6 +123,25 @@ public class ServiceContext {
         });
     }
 
+    public void startGetPlayableSong(final String key) {
+        String paras = "{\"q\":\""+key+"\", \"sort\":\"hot\", \"start\":\"0\", \"length\":\"30\"}";
+        MyRetrofitService service = getMp3Retrofit().create(MyRetrofitService.class);
+        Call<PlayableSongHolder> call = service.getPlayableSongs(paras);
+        call.enqueue(new Callback<PlayableSongHolder>() {
+            @Override
+            public void onResponse(Call<PlayableSongHolder> call, Response<PlayableSongHolder> response) {
+                PlayableSong song = response.body().getFirstSong();
+                EventBus.getDefault().post(new OnPlayableSongLoadedEvent(song));
+                Log.d(TAG, String.format("startGetPlayableSong: song =%s", song.getTitle()));
+            }
+
+            @Override
+            public void onFailure(Call<PlayableSongHolder> call, Throwable t) {
+
+            }
+        });
+    }
+
 
 
     public class OnAdapterDataSetChangeEvent{
@@ -123,15 +153,27 @@ public class ServiceContext {
         }
     }
 
-    public class OnSongsLoadedEvent{
-        String songsId;
+    public class OnPlayableSongLoadedEvent{
+        PlayableSong playableSong;
 
-        public OnSongsLoadedEvent(String songsId) {
-            this.songsId = songsId;
+        public OnPlayableSongLoadedEvent(PlayableSong playableSong) {
+            this.playableSong = playableSong;
         }
 
-        public String getSongsId() {
-            return songsId;
+        public PlayableSong getPlayableSong() {
+            return playableSong;
+        }
+    }
+
+    public class OnSongsLoadedEvent{
+        String musicGenreId;
+
+        public OnSongsLoadedEvent(String musicGenreId) {
+            this.musicGenreId = musicGenreId;
+        }
+
+        public String getMusicGenreId() {
+            return musicGenreId;
         }
     }
 

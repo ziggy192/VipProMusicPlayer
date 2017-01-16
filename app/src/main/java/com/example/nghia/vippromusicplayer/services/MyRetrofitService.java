@@ -3,10 +3,12 @@ package com.example.nghia.vippromusicplayer.services;
 
 import com.example.nghia.vippromusicplayer.models.MediaTypeHolder;
 import com.example.nghia.vippromusicplayer.models.MusicDetailHolder;
+import com.example.nghia.vippromusicplayer.models.PlayableSongHolder;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by Nghia on 12/10/2016.
@@ -18,6 +20,9 @@ public interface MyRetrofitService {
 
     @GET("us/rss/topsongs/limit=50/genre={id}/explicit=true/json")
     Call<MusicDetailHolder> getMusicDetail(@Path("id") String id);
+
+    @GET("search/song")
+    Call<PlayableSongHolder> getPlayableSongs(@Query("requestdata") String paras);
 
 
 //    @POST("login")
