@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nghia.vippromusicplayer.R;
-import com.example.nghia.vippromusicplayer.activities.TestingNewBasicMainActivity;
+import com.example.nghia.vippromusicplayer.activities.MainActivity;
 import com.example.nghia.vippromusicplayer.adapters.SongsRecyclerViewAdapter;
 import com.example.nghia.vippromusicplayer.events.OnSongItemClickedEvent;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
@@ -36,17 +36,16 @@ import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hybridmediaplayer.Hybrid;
 import io.realm.Realm;
 
-import static com.example.nghia.vippromusicplayer.activities.activities_as_fragments.NewMainActivityFragment.MUSIC_GENRE_KEY;
+import static com.example.nghia.vippromusicplayer.activities.activities_as_fragments.MainScreenFragment.MUSIC_GENRE_KEY;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewGenreDetailFragment extends Fragment {
+public class GenreDetailFragment extends Fragment {
 
-    private static final String TAG = NewGenreDetailFragment.class.toString();
+    private static final String TAG = GenreDetailFragment.class.toString();
     @BindView(R.id.detail_image_view)
     ImageView imageView;
     MusicGenre musicGenre;
@@ -68,13 +67,15 @@ public class NewGenreDetailFragment extends Fragment {
     SongsRecyclerViewAdapter adapter;
 
 
-    public NewGenreDetailFragment() {
+    public GenreDetailFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(TAG, "onAttach");
+
         mainActivity = (AppCompatActivity) context;
     }
 
@@ -82,8 +83,8 @@ public class NewGenreDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadReferences();
+        Log.d(TAG, "onCreate");
 
-        ServiceContext.getInstance().startGetGenreDetail(musicGenre.getId());
         setHasOptionsMenu(true);
     }
 
@@ -110,12 +111,15 @@ public class NewGenreDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d(TAG, "onCreateView");
+        ServiceContext.getInstance().startGetGenreDetail(musicGenre.getId());
         return inflater.inflate(R.layout.fragment_new_genre_detail, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        Log.d(TAG, "onViewCreated");
 
         //todo debugging
         toolbar.setTitle("");
@@ -128,12 +132,15 @@ public class NewGenreDetailFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart");
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
+
         EventBus.getDefault().unregister(this);
     }
 
@@ -158,18 +165,12 @@ public class NewGenreDetailFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
-    @Subscribe
-    public void onSongItemClicked(OnSongItemClickedEvent event) {
-        SongsDetail songsDetail = event.getSongsDetail();
-        Log.d(TAG, String.format("onSongItemClicked: songDetail = %s", songsDetail.getSongName()));
-        EventBus.getDefault().post(new TestingNewBasicMainActivity.OnChangingSongEvent(songsDetail));
-        ServiceContext.getInstance().startGetPlayableSong(songsDetail.getNameAndArtist());
-    }
 
 
 
     @Subscribe(sticky = true)
     public void updateUI(ServiceContext.OnSongsLoadedEvent event) {
+        Log.d(TAG, "updating UI, supposed to be after setupUI()");
         adapter.addSongsDetails(DBContext.getInstance().getSongDetailList(event.getMusicGenreId()));
         EventBus.getDefault().removeStickyEvent(event);
     }
@@ -182,6 +183,8 @@ public class NewGenreDetailFragment extends Fragment {
 
 
     private void setupUI() {
+        Log.d(TAG, "setting up UI first time");
+
         toolbarLayout.setTitle("");
         //setup favorite:
         tvPlaylistTitle.setText(musicGenre.getTranslationKey());

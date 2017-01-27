@@ -8,10 +8,17 @@ import com.example.nghia.vippromusicplayer.models.SongsDetail;
 
 public class OnSongItemClickedEvent {
     private SongsDetail songsDetail;
+    private int songPosition;
 
-    public OnSongItemClickedEvent(SongsDetail songsDetail) {
+    public OnSongItemClickedEvent(SongsDetail songsDetail, int songPosition) {
         this.songsDetail = songsDetail;
+        this.songPosition = songPosition;
     }
+
+    public int getSongPosition() {
+        return songPosition;
+    }
+
 
     public SongsDetail getSongsDetail() {
         return songsDetail;

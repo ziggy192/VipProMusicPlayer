@@ -2,6 +2,7 @@ package com.example.nghia.vippromusicplayer;
 
 import android.app.Application;
 
+import com.example.nghia.vippromusicplayer.utils.BackgroundMusicManager;
 import com.example.nghia.vippromusicplayer.utils.DBContext;
 import com.example.nghia.vippromusicplayer.utils.ServiceContext;
 
@@ -13,6 +14,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        BackgroundMusicManager.init(this);
         DBContext.init(this);
         ServiceContext.init("https://rss.itunes.apple.com/data/"
                 ,"https://itunes.apple.com/"

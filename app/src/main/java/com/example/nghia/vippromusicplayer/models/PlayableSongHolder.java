@@ -1,6 +1,10 @@
 package com.example.nghia.vippromusicplayer.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Arrays;
 
 /**
  * Created by Nghia on 1/15/2017.
@@ -19,6 +23,18 @@ public class PlayableSongHolder {
     }
 
     public PlayableSong getFirstSong() {
-        return songs[0];
+        if (songs.length > 0) {
+            return songs[0];
+
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "PlayableSongHolder{" +
+                "songs=" + Arrays.toString(songs) +
+                '}';
     }
 }

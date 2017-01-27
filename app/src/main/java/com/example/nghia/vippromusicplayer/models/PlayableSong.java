@@ -31,4 +31,11 @@ public class PlayableSong {
     public SongUrl getLink() {
         return link;
     }
+
+    @Override
+    public String toString() {
+        return "PlayableSong{" +
+                "title='" + title + '\'' +
+                '}';
+    }
 }

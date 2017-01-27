@@ -37,6 +37,11 @@ public class SongsDetail extends RealmObject {
         this.songArtist = songArtist;
     }
 
+
+    public String getMusicGenreId() {
+        return musicGenreId;
+    }
+
     public String getSongName() {
         return songName.getName();
     }

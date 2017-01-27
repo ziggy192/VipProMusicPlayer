@@ -18,8 +18,7 @@
         android:id="@+id/progress_bar"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:progressBackgroundTint="@color/colorAccent"
+        style="@style/Custom.ProgressBar"
         android:layout_height="5dp"
         />
     <LinearLayout

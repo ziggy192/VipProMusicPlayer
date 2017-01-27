@@ -52,7 +52,7 @@ public class SongsRecyclerViewAdapter extends RecyclerView.Adapter<SongsRecycler
             public void onClick(View v) {
                 int itemPosition = mRecyclerView.getChildAdapterPosition(v);
                 SongsDetail songsDetail = songsDetails.get(itemPosition);
-                EventBus.getDefault().post(new OnSongItemClickedEvent(songsDetail));
+                EventBus.getDefault().post(new OnSongItemClickedEvent(songsDetail,itemPosition));
             }
         });
         SongViewHolder holder = new SongViewHolder(itemView);

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     android:background="@color/colorPrimaryLight"
-    tools:context="com.example.nghia.vippromusicplayer.activities.TestingNewBasicMainActivity">
+    tools:context="com.example.nghia.vippromusicplayer.activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

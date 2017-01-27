@@ -3,6 +3,7 @@ package com.example.nghia.vippromusicplayer.utils;
 import android.util.Log;
 
 
+import com.example.nghia.vippromusicplayer.events.OnSongItemClickedEvent;
 import com.example.nghia.vippromusicplayer.models.MediaTypeHolder;
 import com.example.nghia.vippromusicplayer.models.MusicDetailHolder;
 import com.example.nghia.vippromusicplayer.models.MusicGenre;
@@ -123,20 +124,34 @@ public class ServiceContext {
         });
     }
 
-    public void startGetPlayableSong(final String key) {
+    public void startGetPlayableSong(final OnSongItemClickedEvent argsEvent, final BackgroundMusicManager musicManager) {
+        final String key = argsEvent.getSongsDetail().getNameAndArtist();
         String paras = "{\"q\":\""+key+"\", \"sort\":\"hot\", \"start\":\"0\", \"length\":\"30\"}";
         MyRetrofitService service = getMp3Retrofit().create(MyRetrofitService.class);
         Call<PlayableSongHolder> call = service.getPlayableSongs(paras);
         call.enqueue(new Callback<PlayableSongHolder>() {
             @Override
             public void onResponse(Call<PlayableSongHolder> call, Response<PlayableSongHolder> response) {
-                PlayableSong song = response.body().getFirstSong();
-                EventBus.getDefault().post(new OnPlayableSongLoadedEvent(song));
-                Log.d(TAG, String.format("startGetPlayableSong: song =%s", song.getTitle()));
+                PlayableSongHolder playableSongHolder = response.body();
+                Log.d(TAG, String.format("onResponse: songs = %s", playableSongHolder.toString()));
+                PlayableSong song = playableSongHolder.getFirstSong();
+//                EventBus.getDefault().post(new OnPlayableSongLoadedEvent(song));
+                if (song != null) {
+
+                    musicManager.play(argsEvent,song.getLink().getLink128());
+                }else{
+                    musicManager.errorNoti("Song not found !!!");
+
+                }
             }
 
             @Override
             public void onFailure(Call<PlayableSongHolder> call, Throwable t) {
+//                EventBus.getDefault().post(new OnPlayableSongLoadedEvent(null));
+                Log.d(TAG, String.format("startGetPlayableSong: onFailure : songs = %s",
+                        argsEvent.getSongsDetail().getSongName()));
+                musicManager.errorNoti("Song not found !!!");
+
 
             }
         });

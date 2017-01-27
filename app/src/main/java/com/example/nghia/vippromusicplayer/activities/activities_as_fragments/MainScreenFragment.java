@@ -1,8 +1,6 @@
 package com.example.nghia.vippromusicplayer.activities.activities_as_fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.nghia.vippromusicplayer.R;
-import com.example.nghia.vippromusicplayer.activities.TestingNewBasicMainActivity;
+import com.example.nghia.vippromusicplayer.activities.MainActivity;
 import com.example.nghia.vippromusicplayer.adapters.MusicFragmentPagerAdapter;
 import com.example.nghia.vippromusicplayer.events.OnMusicGenreItemClickedEvent;
 import com.example.nghia.vippromusicplayer.fragments.FavoriteListFragment;
@@ -39,8 +37,8 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NewMainActivityFragment extends Fragment {
-    private static final String TAG = NewMainActivityFragment.class.toString();
+public class MainScreenFragment extends Fragment {
+    private static final String TAG = MainScreenFragment.class.toString();
     public static final String MUSIC_GENRE_KEY = "music_genre";
     @BindView(R.id.main_tab_layout)
     TabLayout tabLayout;
@@ -53,7 +51,7 @@ public class NewMainActivityFragment extends Fragment {
 
 
 
-    public NewMainActivityFragment() {
+    public MainScreenFragment() {
     }
 
 
@@ -141,13 +139,13 @@ public class NewMainActivityFragment extends Fragment {
     @Subscribe
     public void onMusicGenreClicked(OnMusicGenreItemClickedEvent event) {
         MusicGenre musicGenre = event.getMusicGenre();
-        NewGenreDetailFragment newGenreDetailFragment = new NewGenreDetailFragment();
+        GenreDetailFragment genreDetailFragment = new GenreDetailFragment();
         Bundle args = new Bundle();
         args.putString(MUSIC_GENRE_KEY, event.getMusicGenre().getId());
-        newGenreDetailFragment.setArguments(args);
+        genreDetailFragment.setArguments(args);
         EventBus.getDefault().post(
-                new TestingNewBasicMainActivity.DemandFragmentChangingEvent
-                        (newGenreDetailFragment,true));
+                new MainActivity.DemandFragmentChangingEvent
+                        (genreDetailFragment,true));
     }
 
 
